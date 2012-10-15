@@ -2,7 +2,7 @@
 @import url("960_12_col.css");
 @import url("fonts.css");
 @import url("jquery.mCustomScrollbar.css");
-@import url("jquery-ui-1.8.22.custom.css");
+@import url("jquery-ui.css");
 
 body{
 	font-family: 'WalkwayBoldRegular';
