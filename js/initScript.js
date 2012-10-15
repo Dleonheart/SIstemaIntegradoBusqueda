@@ -181,7 +181,7 @@
           ht = new $jit.Hypertree({  
           injectInto: 'arbol',  
           width: 940,  
-          height: 350,
+          height: 480,
           Node: {  
               dim: 11,  
               color: "#f00"  

@@ -50,7 +50,7 @@ h1.logo{
 	box-shadow: 0px 0px 10px 1px rgba(0,0,0,1);
 }
 .pieHolder{
-	margin-top:22px;
+	
 }
 .pie{
 	width:220px;
@@ -232,13 +232,14 @@ div#titulo p{
 
 /*----------------------area visual--------------------------------------------------*/
 section#visualArea{
-	height:602px;/*altura calculada restando el padding*/
-	background:#dedede url("../images/fondoMain.png") repeat-x;
-	padding: 25px 0;
+	height:727px;/*altura calculada restando el padding*/
+	background:#dedede url("../images/FondoDiv.jpg") repeat-x;
+	padding: 30px 0;
 	
 }
 div#arbol{
-	height: 377px;
+	height: 480px;
+	margin-bottom:40px;
 	box-shadow: 0px 0px 10px 1px rgba(39,125,150,1);
 	background: black;
 }
