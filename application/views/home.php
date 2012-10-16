@@ -3,7 +3,23 @@
 
 <section id="visualArea">
 		<div class="container_12">
-			<div id="arbol" class="grid_12"></div>
+			<div id="tabs" class="grid_12">
+				<ul>
+					<li>
+						<a href="#arbol">arbol</a>
+					</li>
+					<li>
+						<a href="#vis2">vis1</a>
+					</li>	
+					<li>
+						<a href="#vis3">vis2</a>
+					</li>
+				</ul>
+				<div id="arbol"class="vis"></div>
+				<div id="vis2" class="vis">balblalblasd</div>
+				<div id="vis3" class="vis">loremimpsum</div>
+			</div>							
+			
 				<div class="piesContainer">				
 					<div class="pieHolder grid_6 clearfix ">
 						<div class="pie" id="Language"></div>

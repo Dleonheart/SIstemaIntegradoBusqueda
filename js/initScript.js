@@ -180,10 +180,10 @@
       var crearArbol = function(json){
           ht = new $jit.Hypertree({  
           injectInto: 'arbol',  
-          width: 940,  
+          width: 780,  
           height: 480,
           Node: {  
-              dim: 11,  
+              dim: 18,  
               color: "#f00"  
           },  
           Edge: {  
@@ -192,7 +192,7 @@
           },
           Navigation: {  
               enable: true,  
-              panning: true,  
+              panning: false,  
             
           },  
           onCreateLabel: function(domElement, node){  
@@ -300,6 +300,12 @@
       modal:true,
       zIndex: 9898
     });
+    config.tabs.tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+    config.tabs.find('li').removeClass( "ui-corner-top" )
+                          .end()
+                          .children('ul')
+                          .removeClass('ui-corner-all')
+                          .removeClass('ui-widget-header');
     config.buscador.on('submit', function(e){
       piesModulo.cargarDatos(config);
       e.preventDefault();
@@ -328,7 +334,9 @@
       urlBusqueda:'index.php/buscador/termino',
       scrollToo:$('div.searchTag'),
       arbol:$('form#form_arbol'),
-      dialogo: $("#dialogo")
+      dialogo: $("#dialogo"),
+      tabs:$('div#tabs'),
+      
     });
     arbolModulo.cargarData({
       arbolJson:'index.php/buscador/cargarArbol',

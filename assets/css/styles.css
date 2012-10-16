@@ -237,11 +237,9 @@ section#visualArea{
 	padding: 30px 0;
 	
 }
-div#arbol{
-	height: 480px;
-	margin-bottom:40px;
-	box-shadow: 0px 0px 10px 1px rgba(39,125,150,1);
-	background: black;
+div.vis{
+	height: 480px !important; 
+	background: rgba(0,0,0,0.65)!important;
 }
 /*----------------------Fin area visual--------------------------------------------------*/
 
