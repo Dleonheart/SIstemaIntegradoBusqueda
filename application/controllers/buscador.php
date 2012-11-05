@@ -21,8 +21,8 @@ class Buscador extends CI_Controller{
 				break;
 			}
 		}
-		$datos[] = $pies;
-		$datos[] = $this->pieTermino->getId($this->input->post('termino'));				
+		$datos['pies'] = $pies;
+		$datos['parentData'] = $this->pieTermino->getId($this->input->post('termino'));				
 		echo json_encode($datos);
 		return;
 	}

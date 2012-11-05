@@ -31,7 +31,7 @@ class pieTermino extends CI_Model{
 									AS nuevaTabla
 									GROUP BY $column");
 		if($result->result_array()){
-			return array($column, $this->crearJsonPie($column, $result),$result->result_array());			
+			return array('columna' => $column, 'jsonPie' => $this->crearJsonPie($column, $result), 'datos' => $result->result_array());			
 		}else{
 			return false;
 		}
@@ -43,7 +43,7 @@ class pieTermino extends CI_Model{
 									WHERE $columna = $codigo
 									GROUP BY $column");
 		if($result){
-			return array($column, $this->crearJsonPie($column, $result),$result->result_array());			
+			return array('columna' => $column, 'jsonPie' => $this->crearJsonPie($column, $result), 'datos' => $result->result_array());			
 		}
 	}
 

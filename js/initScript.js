@@ -1,5 +1,5 @@
 (function($){  
-    var pies = new Array();
+    var pies = new Array(); // variables globales
     var acceso = false;
     var ht;
 
@@ -68,32 +68,35 @@
           type: 'post',
           dataType:'json'     
         }).done(function(data){
-          if (config.searchObj){
+          if (config.searchObj){ // si se realiza carga de datos desde otra parte del js
             if(data.mensaje){
              config.dialogo.empty().text(data.mensaje).dialog("open");
              return;
             }
             pies =[]; 
             data.forEach(function(item){
-              pies.push(crearPie(item[0],item[1], item[2]));
+              pies.push(crearPie(item['columna'],item['jsonPie'], item['datos']));
             });            
           }
-          else{
-            if(data[0].mensaje){
+          else{ //si se realiza la carga desde el buscador
+
+            if(data.mensaje){
              config.dialogo.empty().text(data[0].mensaje).dialog("open");
              return;
             }
             
-            var node = data[1];
+            var node = data['parentData'];
+            console.log(data);
             var parent = ht.graph.getNode(node['ParentKey']); 
             pies =[];            
 
             if(!ht.graph.getNode(node['id_europeana_term'])){             
-              arbolModulo.crearSubArbol(parent,function(){
-                arbolModulo.limpiarArbol(parent);
+              visModulo.crearSubArbol(parent,function(){
+               // visModulo.limpiarArbol(parent);
                 ht.onClick(node['id_europeana_term']);
               });                      
             }else{
+              console.log('balls');
                ht.onClick(node['id_europeana_term']);
             }
           }
@@ -165,7 +168,7 @@
 
     })();//fin del modulo pies
 
-    var arbolModulo = (function(){
+    var visModulo = (function(){
       var panelTitulo = $('div#titulo');
       var cargarData = function (config){        
         $.ajax({
@@ -198,7 +201,7 @@
           onCreateLabel: function(domElement, node){  
               domElement.innerHTML = node.name;  
               $jit.util.addEvent(domElement, 'click', function () { 
-                  node.getParents && limpiarArbol(node.getParents()[0]);
+                  //node.getParents && limpiarArbol(node.getParents()[0]);
                   ht.onClick(node.id, {  
                       onComplete: function() {  
                           ht.controller.onComplete();  
@@ -224,7 +227,7 @@
           onBeforeCompute:function(node){ 
             crearSubArbol(node);
             console.log(node);
-            panelTitulo.html("<p>"+node.name+"</p>");                
+            panelTitulo.html("<p>"+node.name+"</p>"); // se pone el nombre del nodo en  el panel               
           },
           onAfterCompute:function(node){
             
@@ -338,7 +341,7 @@
       tabs:$('div#tabs'),
       
     });
-    arbolModulo.cargarData({
+    visModulo.cargarData({
       arbolJson:'index.php/buscador/cargarArbol',
       piesJson:'index.php/buscador/pieArbol'
     });
