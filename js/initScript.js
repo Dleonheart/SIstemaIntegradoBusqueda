@@ -1,7 +1,7 @@
-(function($){  
-    var pies = new Array(); // variables globales
-    var acceso = false;
-    var ht;
+(function($){  // variables globales
+    var pies = new Array(); // para actualizar la posicion en scroll
+    var acceso = false; // variable auxiliar para trabajar ajax
+    var ht; // el arbol.
 
 		var scrollBar = (function(){
       var crear = function(contenedor){ 
