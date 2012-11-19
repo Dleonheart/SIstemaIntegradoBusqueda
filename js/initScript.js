@@ -181,10 +181,15 @@
       }
 
       var crearArbol = function(json){
-          ht = new $jit.Hypertree({  
+          ht = new $jit.RGraph({  
           injectInto: 'arbol',  
           width: 780,  
           height: 480,
+          background: {  
+            CanvasStyles: {  
+              strokeStyle: '#555'  
+            }  
+          },
           Node: {  
               dim: 18,  
               color: "#f00"  
