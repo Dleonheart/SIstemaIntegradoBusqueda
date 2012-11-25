@@ -79,26 +79,19 @@
             });            
           }
           else{ //si se realiza la carga desde el buscador
-
-            if(data.mensaje){
-             config.dialogo.empty().text(data[0].mensaje).dialog("open");
+            
+            if(data.pies.mensaje){
+             config.dialogo.empty().text(data.pies.mensaje).dialog("open");
              return;
             }
-            
-            var node = data['parentData'];
-            console.log(data);
-            var parent = ht.graph.getNode(node['ParentKey']); 
-            pies =[];            
+               
+             console.log(data);
+             
+             //centrar el nodo del arbol, al centrarse automaticamente se cargan los pies
+             //desde el evento onclic definido en el arbol
+             ht.onClick(data.termData.term_id);
 
-            if(!ht.graph.getNode(node['id_europeana_term'])){             
-              visModulo.crearSubArbol(parent,function(){
-               // visModulo.limpiarArbol(parent);
-                ht.onClick(node['id_europeana_term']);
-              });                      
-            }else{
-              console.log('balls');
-               ht.onClick(node['id_europeana_term']);
-            }
+            
           }
                   
         });
@@ -171,13 +164,12 @@
     var visModulo = (function(){
       var panelTitulo = $('div#titulo');
       var cargarData = function (config){        
-        $.ajax({
-          url: config.arbolJson,
-          type: 'post',
-          dataType:'json'     
-        }).done(function(data){
-          crearArbol(data);  
-        });
+        // $.ajax({
+        //   url: config.arbolJson,
+        //   type: 'post',
+        //   dataType:'json'     
+        // }).done(crearArbol);
+        crearArbol(dataJson);
       }
 
       var crearArbol = function(json){
@@ -191,12 +183,12 @@
             }  
           },
           Node: {  
-              dim: 18,  
-              color: "#f00"  
+              dim: 10,  
+              color: "#004080"  
           },  
           Edge: {  
               lineWidth: 2,  
-              color: "#088"  
+              color: "#0BC0F4"  
           },
           Navigation: {  
               enable: true,  
@@ -218,7 +210,7 @@
               var style = domElement.style;  
               style.display = '';  
               style.cursor = 'pointer';  
-              if (node._depth <= 1) {  
+              if (node._depth <= 2) {  
                   style.fontSize = "0.8em";  
                   style.color = "#ddd";  
           
@@ -230,7 +222,7 @@
               style.left = (left - w / 2) + 'px';  
           },
           onBeforeCompute:function(node){ 
-            crearSubArbol(node);
+            piesNodoArbol(node);
             console.log(node);
             panelTitulo.html("<p>"+node.name+"</p>"); // se pone el nombre del nodo en  el panel               
           },
@@ -248,32 +240,42 @@
         ht.refresh(); 
       }
 
-      var crearSubArbol = function (node, callback){
+      var piesNodoArbol = function (node, callback){
+       
         acceso && acceso.abort();
-        node && piesModulo.cargarDatos({
-          searchObj:{id:node.id,column:node.data.column},
+        if(node.data.title === "is Category"){
+          piesModulo.cargarDatos({
+          searchObj:{id:node.id,column:"parentKey"},
           urlBusqueda:'index.php/buscador/pieArbol'
         });
-        if (node.getSubnodes([1,1]).length <= 1){
-          $.ajax({
-            url:'index.php/buscador/cargarSubArbol',
-            dataType:'json',
-            type:'post',
-            data:{nodeId:node.id}
-          }).done(function(data){
-              (data.children.length > 0 ) && ht.op.sum(data,{
-                type: "fade:seq",
-                duration:500,
-                onComplete:function(){
-                  if(callback){
-                    callback();
-                  }else{
-                    ht.onClick(node.id);
-                  }                
-                }
-            });
-          });
+
+        }else{
+
+        piesModulo.cargarDatos({
+          searchObj:{id:node.id,column:"term_id"},
+          urlBusqueda:'index.php/buscador/pieArbol'
+        });
         }
+        // if (node.getSubnodes([1,1]).length <= 1){
+        //   $.ajax({
+        //     url:'index.php/buscador/cargarSubArbol',
+        //     dataType:'json',
+        //     type:'post',    
+        //     data:{nodeId:node.id}
+        //   }).done(function(data){
+        //       (data.children.length > 0 ) && ht.op.sum(data,{
+        //         type: "fade:seq",
+        //         duration:500,
+        //         onComplete:function(){
+        //           if(callback){
+        //             callback();
+        //           }else{
+        //             ht.onClick(node.id);
+        //           }                
+        //         }
+        //     });
+        //   });
+        // }
       }
 
       var limpiarArbol = function(node){
@@ -294,13 +296,14 @@
       return {
         cargarData:cargarData,
         limpiarArbol:limpiarArbol,
-        crearSubArbol: crearSubArbol
+        piesNodoArbol: piesNodoArbol
       };
 
     })();//fin del modulo arbol
 
 
   var init = function (config){
+
     config.dialogo.dialog({ //dialogo modal
       autoOpen: false,
       show: "blind",
@@ -334,8 +337,7 @@
 
     /*-------------------------------------fin modulos-------------------------------------------*/
 
-    /*Ingresar aqui las url; son las mismas pero seria localhost y no localhost:1234, las tengo asi porque mi xammp
-      va por el pueto 1234, */
+ 
 
     init({
       buscador:$('form#form_buscador'),
@@ -355,4 +357,5 @@
      scrollBar.crear({
       pies:$(".piesContainer")      
     });
+
 })(jQuery);

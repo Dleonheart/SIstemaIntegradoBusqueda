@@ -15,6 +15,7 @@
 	<script language="javascript" type="text/javascript" src="<?php echo base_url(); ?>js/jquery.mCustomScrollbar.js" ></script>
 	<script language="javascript" type="text/javascript" src="<?php echo base_url(); ?>js/jquery.mousewheel.min.js" ></script>
 	<script language="javascript" type="text/javascript" src="<?php echo base_url(); ?>js/handlebars.js" ></script>
+	<script language="javascript" type="text/javascript" src="<?php echo base_url(); ?>js/data.js" ></script>
 	<script language="javascript" type="text/javascript" src="<?php echo base_url(); ?>js/initScript.js" ></script>
 </body>
 </html>

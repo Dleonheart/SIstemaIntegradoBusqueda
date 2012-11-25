@@ -10,10 +10,8 @@ class pieTermino extends CI_Model{
 
 	
 	function getId($termino){
-		$result = $this->db->query("SELECT m.id_europeana_term, m.ParentKey 
+		$result = $this->db->query("SELECT e.id_europeana_term, e.term_id 
 									FROM europeanaterms e
-									INNER JOIN metadata m
-									ON e.id_europeana_term = m.id_europeana_term
 									WHERE e.termNameUtf8 = '$termino'");
 		if($result){
 			return $result->row();
@@ -40,12 +38,16 @@ class pieTermino extends CI_Model{
 	function pieArbol($codigo, $columna, $column){
 		$result = $this->db->query("SELECT $column, COUNT($column) AS Numero
 									FROM metadata
+									INNER JOIN europeanaterms
+									ON metadata.id_europeana_term = europeanaterms.id_europeana_term
 									WHERE $columna = $codigo
 									GROUP BY $column");
 		if($result){
 			return array('columna' => $column, 'jsonPie' => $this->crearJsonPie($column, $result), 'datos' => $result->result_array());			
 		}
 	}
+
+	//function parentArbol();
 
 	function crearJsonPie($criterio, $result){
 		$filas = $result->result_array();
