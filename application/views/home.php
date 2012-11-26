@@ -5,19 +5,19 @@
 		<div class="container_12">
 			<div id="tabs" class="grid_12">
 				<ul>
-					<li>
-						<a href="#arbol">arbol</a>
+					<li id ="arbolLink">
+						<a href="#arbol">Radial graph</a>
 					</li>
-					<li>
-						<a href="#SpaceTree">vis1</a>
+					<li id="hyperLink">
+						<a href="#hyperArbol">Hypertree</a>
 					</li>	
 					<li>
-						<a href="#vis3">vis2</a>
+						<a href="#icicle">vis2</a>
 					</li>
 				</ul>
 				<div id="arbol"class="vis"></div>
-				<div id="SpaceTree" class="vis">balblalblasd</div>
-				<div id="vis3" class="vis">loremimpsum</div>
+				<div id="hyperArbol" class="vis"></div>
+				<div id="icicle" class="vis"></div>
 			</div>							
 			
 				<div class="piesContainer">				

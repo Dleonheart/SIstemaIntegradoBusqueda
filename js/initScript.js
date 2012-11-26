@@ -1,7 +1,7 @@
 (function($){  // variables globales
     var pies = new Array(); // para actualizar la posicion en scroll
-    var acceso = false; // variable auxiliar para trabajar ajax
-    var ht; // el arbol.
+    var ajaxRequest = false; // variable auxiliar para trabajar ajax
+    var visActual; // el arbol.
 
 		var scrollBar = (function(){
       var crear = function(contenedor){ 
@@ -62,7 +62,7 @@
       var piesMarco = $('div.pie');
       var cargarDatos = function(config){
         loadingProgress(piesMarco);
-        acceso = $.ajax({
+        ajaxRequest = $.ajax({
           url: config.urlBusqueda,
           data: config.searchObj || config.buscador.serialize(),
           type: 'post',
@@ -89,7 +89,7 @@
              
              //centrar el nodo del arbol, al centrarse automaticamente se cargan los pies
              //desde el evento onclic definido en el arbol
-             ht.onClick(data.termData.term_id);
+             visActual.onClick(data.termData.term_id);//aqui debe centrarce la visualización actual
 
             
           }
@@ -163,17 +163,27 @@
 
     var visModulo = (function(){
       var panelTitulo = $('div#titulo');
-      var cargarData = function (config){        
-        // $.ajax({
-        //   url: config.arbolJson,
-        //   type: 'post',
-        //   dataType:'json'     
-        // }).done(crearArbol);
-        crearArbol(dataJson);
+      var cargarData = function (config){   // inicializa todas las visualizaciones      
+        
+        visActual = crearRgraph(dataJson); //data json son los datos del arbol importados de los ejemplos que envio el profe
+        
+        /*es necesario vaciar las otras visualizaciones antes de pintar una nueva
+        de otra forma hay conflictos con las id de las etiquetas y no se muestran
+        y entonces no hay forma de navegar los arboles*/
+
+        $('li#hyperLink').on('click',function(){
+          $('div.vis').empty();
+         visActual = crearHyperTree(dataJson);
+        });
+        $('li#arbolLink').on('click',function(){
+          $('div.vis').empty();
+         visActual = crearRgraph(dataJson);
+        });
+
       }
 
-      var crearArbol = function(json){
-          ht = new $jit.RGraph({  
+      var crearRgraph = function(json){
+          var ht = new $jit.RGraph({  
           injectInto: 'arbol',  
           width: 780,  
           height: 480,
@@ -196,6 +206,7 @@
             
           },  
           onCreateLabel: function(domElement, node){  
+
               domElement.innerHTML = node.name;  
               $jit.util.addEvent(domElement, 'click', function () { 
                   //node.getParents && limpiarArbol(node.getParents()[0]);
@@ -238,11 +249,76 @@
         });
         ht.loadJSON(json);
         ht.refresh(); 
+        return ht;
+      }
+      var crearHyperTree = function(json){
+          var ht = new $jit.Hypertree({  
+          injectInto: 'hyperArbol',  
+          width: 780,  
+          height: 480,
+          Node: {  
+              dim: 10,  
+              color: "#004080"  
+          },  
+          Edge: {  
+              lineWidth: 2,  
+              color: "#0BC0F4"  
+          },
+          Navigation: {  
+              enable: true,  
+              panning: true,  
+            
+          },  
+          onCreateLabel: function(domElement, node){
+             
+              domElement.innerHTML = node.name;  
+              $jit.util.addEvent(domElement, 'click', function () { 
+                  //node.getParents && limpiarArbol(node.getParents()[0]);
+                  ht.onClick(node.id, {  
+                      onComplete: function() {  
+                          ht.controller.onComplete();  
+                      }  
+                  });  
+              });  
+          }, 
+          onPlaceLabel: function(domElement, node){  
+              var style = domElement.style;  
+              style.display = '';  
+              style.cursor = 'pointer';  
+              if (node._depth <= 2) {  
+                  style.fontSize = "0.8em";  
+                  style.color = "#ddd";  
+          
+              }  else {  
+                  style.display = 'none';  
+              }         
+              var left = parseInt(style.left);  
+              var w = domElement.offsetWidth;  
+              style.left = (left - w / 2) + 'px';  
+          },
+          onBeforeCompute:function(node){ 
+            piesNodoArbol(node);
+            console.log(node);
+            panelTitulo.html("<p>"+node.name+"</p>"); // se pone el nombre del nodo en  el panel               
+          },
+          onAfterCompute:function(node){
+            
+          },
+          Events:{
+            enable:true,
+            onClick:function(){
+             //limpiarArbol(node.getParents());  
+            }
+          }        
+        });
+        ht.loadJSON(json);
+        ht.refresh(); 
+        return ht;
       }
 
-      var piesNodoArbol = function (node, callback){
+      var piesNodoArbol = function (node){// carga los pies de un concepto o categoría
        
-        acceso && acceso.abort();
+        ajaxRequest && ajaxRequest.abort();
         if(node.data.title === "is Category"){
           piesModulo.cargarDatos({
           searchObj:{id:node.id,column:"parentKey"},
@@ -255,47 +331,11 @@
           searchObj:{id:node.id,column:"term_id"},
           urlBusqueda:'index.php/buscador/pieArbol'
         });
-        }
-        // if (node.getSubnodes([1,1]).length <= 1){
-        //   $.ajax({
-        //     url:'index.php/buscador/cargarSubArbol',
-        //     dataType:'json',
-        //     type:'post',    
-        //     data:{nodeId:node.id}
-        //   }).done(function(data){
-        //       (data.children.length > 0 ) && ht.op.sum(data,{
-        //         type: "fade:seq",
-        //         duration:500,
-        //         onComplete:function(){
-        //           if(callback){
-        //             callback();
-        //           }else{
-        //             ht.onClick(node.id);
-        //           }                
-        //         }
-        //     });
-        //   });
-        // }
-      }
-
-      var limpiarArbol = function(node){
-        var root = node.getParents() && ht.graph.getNode(ht.root);
-        if(root.getSubnodes([1,1])){
-          var hijosRoot = root.getSubnodes([1,1]);
-          hijosRoot.forEach(function(item){
-            var subN = item.getSubnodes([1,1]);
-            if (subN && (item.id != node.id)){
-              subN.forEach(function(item){
-                ht.op.removeNode(item.id);
-              });
-            }          
-          });  
         }        
       }
 
       return {
         cargarData:cargarData,
-        limpiarArbol:limpiarArbol,
         piesNodoArbol: piesNodoArbol
       };
 
